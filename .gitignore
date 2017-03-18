@@ -6,6 +6,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+/FileUploader.Web/app/**/*.js
+/FileUploader.Web/app/**/*.map
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
