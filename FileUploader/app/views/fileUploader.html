@@ -1,0 +1,7 @@
+
+<input id="fileBlob" type="file" ng-model="vm.fileBlob" ng-blur="vm.AddAttachment($event)" />
+<input type="button" ng-click="vm.AddAttachment()" value="attach" />   
+
+<div ng-repeat="fileBlob in vm.fileBlobs">
+    <div ng-click="vm.DownloadFile(fileBlob)">{{fileBlob.Name}} ({{fileBlob.Size}})</div>
+</div>
