@@ -70,6 +70,12 @@
     <Compile Include="UploadSessionTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Files\BodyPart_cfdf1acb-e4d0-48dd-8152-c73eff4c23cb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Files\BodyPart_cfdf1acb-e4d0-48dd-8152-c73eff4c23cc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Files\Programming C#.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
