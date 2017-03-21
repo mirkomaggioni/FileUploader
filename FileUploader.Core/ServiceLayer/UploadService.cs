@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -55,7 +56,12 @@ namespace FileUploader.Core.ServiceLayer
             await request.Content.ReadAsMultipartAsync(provider);
             provider.ExtractValues();
 
-            var uploadSession = _uploadSessions[provider.CorrelationId];
+            UploadSession uploadSession;
+            _uploadSessions.TryGetValue(provider.CorrelationId, out uploadSession);
+
+            if (uploadSession == null)
+                throw new ObjectNotFoundException();
+
             var completed = uploadSession.AddChunk(provider.Filename, provider.ChunkFilename, provider.ChunkNumber, provider.TotalChunks);
 
             if (completed)
