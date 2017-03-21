@@ -15,7 +15,7 @@ namespace FileUploader.Core.ServiceLayer
     public interface IUploadService
     {
         Task<FileBlob> GetFileBlob(Guid idFileBlob);
-        List<FileBlob> GetFileBlobs();
+        Task<List<FileBlob>> GetFileBlobs();
         Guid StartNewSession();
         Task<bool> UploadChunk(HttpRequestMessage request);
     }
@@ -32,9 +32,9 @@ namespace FileUploader.Core.ServiceLayer
             _uploadSessions = new ConcurrentDictionary<string, UploadSession>();
         }
 
-        public List<FileBlob> GetFileBlobs()
+        public async Task<List<FileBlob>> GetFileBlobs()
         {
-            var fileBlobs = _db.FileBlobs.ToList();
+            var fileBlobs = await  _db.FileBlobs.ToListAsync();
 
             return fileBlobs.Select(e => new FileBlob()
             {

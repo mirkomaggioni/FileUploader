@@ -45,9 +45,9 @@ namespace FileUploader.Core.Tests
         }
 
         [Test]
-        public void should_retrieve_file_blob_list()
+        public async Task should_retrieve_file_blob_list()
         {
-            _uploadService.GetFileBlobs().Count.Should().BeGreaterThan(0);
+            (await _uploadService.GetFileBlobs()).Count.Should().BeGreaterThan(0);
         }
 
         [Test]

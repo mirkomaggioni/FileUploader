@@ -12,18 +12,18 @@ namespace FileUploader.Web.Controllers.Api
 {
     public class FileBlobsController : ApiController
     {
-        private readonly IUploadServiceService _fileBlobsService;
+        private readonly IUploadService _fileBlobsService;
         private readonly Context _db = new Context();
 
-        public FileBlobsController(IUploadServiceService uploadService)
+        public FileBlobsController(IUploadService uploadService)
         {
             _fileBlobsService = uploadService;
         }
 
         [HttpGet]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            return Ok(_fileBlobsService.GetFileBlobs());
+            return Ok(await _fileBlobsService.GetFileBlobs());
         }
 
         [HttpGet]
