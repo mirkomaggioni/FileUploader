@@ -17,7 +17,7 @@ namespace FileUploader.Web
         public void Configuration(IAppBuilder app)
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new FileBlobsService(@"c:\temp\chunks\"))
+            builder.Register(c => new UploadService(@"c:\temp\chunks\"))
                 .AsImplementedInterfaces()
                 .SingleInstance();
 

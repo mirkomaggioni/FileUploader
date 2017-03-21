@@ -12,10 +12,10 @@ namespace FileUploader.Web.Controllers.Api
 {
     public class FileBlobsController : ApiController
     {
-        private readonly IFileBlobsService _fileBlobsService;
+        private readonly IUploadServiceService _fileBlobsService;
         private readonly Context _db = new Context();
 
-        public FileBlobsController(IFileBlobsService uploadService)
+        public FileBlobsController(IUploadServiceService uploadService)
         {
             _fileBlobsService = uploadService;
         }

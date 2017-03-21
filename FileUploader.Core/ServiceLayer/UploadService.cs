@@ -11,7 +11,7 @@ using Context = FileUploader.Core.DataLayer.Context;
 
 namespace FileUploader.Core.ServiceLayer
 {
-    public interface IFileBlobsService
+    public interface IUploadService
     {
         Task<FileBlob> GetFileBlob(Guid idFileBlob);
         List<FileBlob> GetFileBlobs();
@@ -19,13 +19,13 @@ namespace FileUploader.Core.ServiceLayer
         Task<bool> UploadChunk(HttpRequestMessage request);
     }
 
-    public class FileBlobsService : IFileBlobsService
+    public class UploadService : IUploadService
     {
         private readonly Context _db = new Context();
         private readonly string _path;
         private readonly Dictionary<string, UploadSession> _uploadSessions;
 
-        public FileBlobsService(string path)
+        public UploadService(string path)
         {
             _path = path;
             _uploadSessions = new Dictionary<string, UploadSession>();
