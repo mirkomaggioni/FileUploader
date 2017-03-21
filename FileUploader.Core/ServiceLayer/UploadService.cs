@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -23,12 +24,12 @@ namespace FileUploader.Core.ServiceLayer
     {
         private readonly Context _db = new Context();
         private readonly string _path;
-        private readonly Dictionary<string, UploadSession> _uploadSessions;
+        private readonly ConcurrentDictionary<string, UploadSession> _uploadSessions;
 
         public UploadService(string path)
         {
             _path = path;
-            _uploadSessions = new Dictionary<string, UploadSession>();
+            _uploadSessions = new ConcurrentDictionary<string, UploadSession>();
         }
 
         public List<FileBlob> GetFileBlobs()
@@ -82,7 +83,7 @@ namespace FileUploader.Core.ServiceLayer
         {
             var correlationId = Guid.NewGuid();
             var session = new UploadSession();
-            _uploadSessions.Add(correlationId.ToString(), session);
+            _uploadSessions.TryAdd(correlationId.ToString(), session);
 
             return correlationId;
         }
