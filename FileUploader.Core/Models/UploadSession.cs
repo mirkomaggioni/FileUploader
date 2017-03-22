@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileUploader.Core.Models
@@ -41,7 +42,7 @@ namespace FileUploader.Core.Models
             var metadata = new ChunkMetadata(chunkFileName, chunkNumber);
             Chunks.Add(metadata);
 
-            _chunksUploaded++;
+            _chunksUploaded = Interlocked.Increment(ref _chunksUploaded);
             return _chunksUploaded == _totalChunks;
         }
 
