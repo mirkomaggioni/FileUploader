@@ -31,7 +31,8 @@ namespace FileUploader.Core.Tests
             session.Filename.Should().NotBeNullOrEmpty();
             session.Filename.Should().BeEquivalentTo(_filename);
 
-            var chunk = session.Chunks[0];
+            ChunkMetadata chunk;
+            session.Chunks.TryPeek(out chunk);
             chunk.Filename.Should().NotBeNullOrEmpty();
             chunk.Filename.Should().BeEquivalentTo("BodyPart_5e9c51db-180a-47c6-864c-256474957298");
             chunk.ChunkNumber.Should().NotBe(null);

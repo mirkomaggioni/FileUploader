@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ namespace FileUploader.Core.Models
 {
     public interface IUploadSession
     {
-        List<ChunkMetadata> Chunks { get; set; }
+        ConcurrentBag<ChunkMetadata> Chunks { get; set; }
         string Filename { get; }
         long Filesize { get; }
         bool AddChunk(string filename, string chunkFileName, int chunkNumber, int totalChunks);
@@ -22,13 +21,13 @@ namespace FileUploader.Core.Models
         private int _totalChunks;
         private int _chunksUploaded;
 
-        public List<ChunkMetadata> Chunks { get; set; }
+        public ConcurrentBag<ChunkMetadata> Chunks { get; set; }
 
         public UploadSession()
         {
             Filesize = 0;
             _chunksUploaded = 0;
-            Chunks = new List<ChunkMetadata>();
+            Chunks = new ConcurrentBag<ChunkMetadata>();
         }
 
         public bool AddChunk(string filename, string chunkFileName, int chunkNumber, int totalChunks)
