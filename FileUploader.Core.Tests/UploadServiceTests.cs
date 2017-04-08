@@ -25,19 +25,19 @@ namespace FileUploader.Core.Tests
                 new []
                 {
                     "BodyPart_11ff84db-7892-4d04-b1f3-141f2493207f",
-                    "BodyPart_41417c43-9554-4d1f-b5f8-fdb371ce3d26",
+                    "BodyPart_e0b1d367-2df5-4bbb-8ade-9133b372f980",
                     "BodyPart_d8d9de06-5ffc-4829-aad3-54ec1be85d49",
-                    "BodyPart_e0b1d367-2df5-4bbb-8ade-9133b372f980"
+                    "BodyPart_41417c43-9554-4d1f-b5f8-fdb371ce3d26"
                 }
             },
             {
                 "70-532.pdf",
                 new []
                 {
+                    "BodyPart_86bb7aca-3fef-4416-a7a8-6eb9e88db019",
                     "BodyPart_2c2d686c-a41f-407c-b3de-8b1e28e18aaf",
-                    "BodyPart_3e8c0ad1-6fe6-4dd6-b494-36024f2856ff",
                     "BodyPart_04a57bd5-38bf-4520-870e-4327bc86dc50",
-                    "BodyPart_86bb7aca-3fef-4416-a7a8-6eb9e88db019"
+                    "BodyPart_3e8c0ad1-6fe6-4dd6-b494-36024f2856ff"
                 }
             }
         };
@@ -66,12 +66,6 @@ namespace FileUploader.Core.Tests
         {
             _db.FileBlobs.RemoveRange(_fileBlobs);
             await _db.SaveChangesAsync();
-
-            foreach (var key in _chunks.Keys)
-            {
-                if (File.Exists(_outputPath + key))
-                    File.Delete(_outputPath + key);
-            }
         }
 
         [Test]
@@ -115,6 +109,32 @@ namespace FileUploader.Core.Tests
 
             tasks.Where(t => t.Result).Should().NotBeNullOrEmpty();
             File.Exists(_outputPath + _chunks.First().Key).Should().BeTrue();
+        }
+
+        [Test]
+        public async Task should_upload_all_chunks_of_two_files()
+        {
+            var tasks = new Dictionary<string, List<Task<bool>>>();
+
+            foreach (var key in _chunks.Keys)
+            {
+                var correlationId = _uploadService.StartNewSession();
+                var fileTasks = new List<Task<bool>>();
+
+                for (var i = 0; i < _chunks[key].Length; i++)
+                {
+                    fileTasks.Add(UploadChunk(key, _chunks[key][i], i + 1, _chunks[key].Length, correlationId));
+                }
+
+                tasks.Add(key, fileTasks);
+            }
+
+            foreach (var key in _chunks.Keys)
+            {
+                await Task.WhenAll(tasks[key]);
+                tasks[key].Where(t => t.Result).Should().NotBeNullOrEmpty();
+                File.Exists(_outputPath + key).Should().BeTrue();
+            }       
         }
 
         [Test]
