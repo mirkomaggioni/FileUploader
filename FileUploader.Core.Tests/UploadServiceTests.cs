@@ -17,7 +17,30 @@ namespace FileUploader.Core.Tests
         private readonly Context _db = new Context();
         private IUploadService _uploadService;
         private string _outputPath = @"c:\temp\chunks\";
-        private readonly string _filename = "Programming C#.pdf";
+        private readonly Dictionary<string, string[]> _chunks = new Dictionary<string, string[]>()
+        {
+            {
+                "Programming C#.pdf",
+                new []
+                {
+                    "BodyPart_11ff84db-7892-4d04-b1f3-141f2493207f",
+                    "BodyPart_41417c43-9554-4d1f-b5f8-fdb371ce3d26",
+                    "BodyPart_d8d9de06-5ffc-4829-aad3-54ec1be85d49",
+                    "BodyPart_e0b1d367-2df5-4bbb-8ade-9133b372f980"
+                }
+            },
+            {
+                "70-532.pdf",
+                new []
+                {
+                    "BodyPart_2c2d686c-a41f-407c-b3de-8b1e28e18aaf",
+                    "BodyPart_3e8c0ad1-6fe6-4dd6-b494-36024f2856ff",
+                    "BodyPart_04a57bd5-38bf-4520-870e-4327bc86dc50",
+                    "BodyPart_86bb7aca-3fef-4416-a7a8-6eb9e88db019"
+                }
+            }
+        };
+
         private readonly string _filepath = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}\files\";
         private List<FileBlob> _fileBlobs;
 
@@ -62,7 +85,7 @@ namespace FileUploader.Core.Tests
         [Test]
         public async Task should_upload_one_chunk()
         {
-            using (var stream = new FileStream(_filepath + _filename, FileMode.Open))
+            using (var stream = new FileStream(_filepath + _chunks["Programming C#.pdf"][0], FileMode.Open))
             {
                 var multiPartContent = new MultipartFormDataContent("boundary=---skj2vj42al0dk45vda");
                 var streamContent = new StreamContent(stream);
@@ -70,7 +93,7 @@ namespace FileUploader.Core.Tests
                 streamContent.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
                 streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("file")
                 {
-                    FileName = _filename
+                    FileName = _chunks["Programming C#.pdf"][0]
                 };
 
                 multiPartContent.Add(streamContent);

@@ -80,13 +80,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Files\BodyPart_cfdf1acb-e4d0-48dd-8152-c73eff4c23cb">
+    <None Include="Files\BodyPart_11ff84db-7892-4d04-b1f3-141f2493207f">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\BodyPart_cfdf1acb-e4d0-48dd-8152-c73eff4c23cc">
+    <None Include="Files\BodyPart_41417c43-9554-4d1f-b5f8-fdb371ce3d26">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\Programming C#.pdf">
+    <None Include="Files\BodyPart_d8d9de06-5ffc-4829-aad3-54ec1be85d49">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Files\BodyPart_e0b1d367-2df5-4bbb-8ade-9133b372f980">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Files\BodyPart_04a57bd5-38bf-4520-870e-4327bc86dc50">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Files\BodyPart_2c2d686c-a41f-407c-b3de-8b1e28e18aaf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Files\BodyPart_3e8c0ad1-6fe6-4dd6-b494-36024f2856ff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Files\BodyPart_86bb7aca-3fef-4416-a7a8-6eb9e88db019">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
