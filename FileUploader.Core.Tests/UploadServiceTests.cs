@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -65,6 +66,12 @@ namespace FileUploader.Core.Tests
         {
             _db.FileBlobs.RemoveRange(_fileBlobs);
             await _db.SaveChangesAsync();
+
+            foreach (var key in _chunks.Keys)
+            {
+                if (File.Exists(_outputPath + key))
+                    File.Delete(_outputPath + key);
+            }
         }
 
         [Test]
@@ -85,31 +92,29 @@ namespace FileUploader.Core.Tests
         [Test]
         public async Task should_upload_one_chunk()
         {
-            using (var stream = new FileStream(_filepath + _chunks["Programming C#.pdf"][0], FileMode.Open))
+            var key = _chunks.First().Key;
+            var correlationId = _uploadService.StartNewSession();
+            var result = await UploadChunk(key, _chunks[key][0], 1, _chunks[key].Length, correlationId);
+
+            result.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task should_upload_all_chunks_of_one_file()
+        {
+            var correlationId = _uploadService.StartNewSession();
+            var key = _chunks.First().Key;
+            var tasks = new List<Task<bool>>();
+
+            for (var i = 0; i < _chunks[key].Length; i++)
             {
-                var multiPartContent = new MultipartFormDataContent("boundary=---skj2vj42al0dk45vda");
-                var streamContent = new StreamContent(stream);
-
-                streamContent.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
-                streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("file")
-                {
-                    FileName = _chunks["Programming C#.pdf"][0]
-                };
-
-                multiPartContent.Add(streamContent);
-                multiPartContent.Add(new StringContent(_uploadService.StartNewSession().ToString()), "correlationId");
-                multiPartContent.Add(new StringContent("1"), "chunkNumber");
-                multiPartContent.Add(new StringContent("4"), "totalChunks");
-
-                var request = new HttpRequestMessage
-                {
-                    Content = multiPartContent
-                };
-
-                var result = await _uploadService.UploadChunk(request);
-
-                result.Should().BeFalse();
+                tasks.Add(UploadChunk(key, _chunks[key][i], i + 1, _chunks[key].Length, correlationId));
             }
+
+            await Task.WhenAll(tasks);
+
+            tasks.Where(t => t.Result).Should().NotBeNullOrEmpty();
+            File.Exists(_outputPath + _chunks.First().Key).Should().BeTrue();
         }
 
         [Test]
@@ -118,6 +123,33 @@ namespace FileUploader.Core.Tests
             var correlationId = _uploadService.StartNewSession();
 
             correlationId.Should().NotBeEmpty();
+        }
+
+        private async Task<bool> UploadChunk(string key, string filename, int chunkNumber, int totalChunks, Guid correlationId)
+        {
+            using (var stream = new FileStream(_filepath + filename, FileMode.Open))
+            {
+                var multiPartContent = new MultipartFormDataContent("boundary=---skj2vj42al0dk45vda");
+                var streamContent = new StreamContent(stream);
+
+                streamContent.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
+                streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("file")
+                {
+                    FileName = key
+                };
+
+                multiPartContent.Add(streamContent);
+                multiPartContent.Add(new StringContent(correlationId.ToString()), "correlationId");
+                multiPartContent.Add(new StringContent(chunkNumber.ToString()), "chunkNumber");
+                multiPartContent.Add(new StringContent(totalChunks.ToString()), "totalChunks");
+
+                var request = new HttpRequestMessage
+                {
+                    Content = multiPartContent
+                };
+
+                return await _uploadService.UploadChunk(request);
+            }
         }
     }
 }
